@@ -55,8 +55,10 @@ class PlaceDialog(simpledialog.Dialog):
         for text, command in self.button:
             w = tk.Button(frm, text=text, command=self.__c2f(command))
             w.pack(side=tk.RIGHT, padx=5, pady=5)
-        self.bind('<Return>', self.ok)
-        self.bind('<Escape>', self.cancel)
+            if command == 'ok':
+                self.bind('<Return>', self.ok)
+            elif command == 'cancel':
+                self.bind('<Escape>', self.cancel)
         frm.pack()
 
     def ok(self, event=None):
@@ -73,11 +75,27 @@ class PlaceDialog(simpledialog.Dialog):
 
 
 class QueryString(simpledialog._QueryString):
+    def __init__(self, title, prompt,
+            button=('OK','Cancel'), show=None, parent=None, **kw):
+        self.button = button
+        self.result = None
+        super().__init__(title, prompt, show=show, parent=parent, **kw)
+
     def ok(self, event=None):
         if self.entry.get() == '':
             return
         self.result = self.entry.get()
         super().ok(event)
+
+    def buttonbox(self):
+        frm = ttk.Frame(self)
+        w = ttk.Button(frm, text=self.button[0], width=10, command=self.ok, default=tk.ACTIVE)
+        w.pack(side=tk.LEFT, padx=5, pady=5)
+        w = ttk.Button(frm, text=self.button[1], width=10, command=self.cancel)
+        w.pack(side=tk.LEFT, padx=5, pady=5)
+        self.bind('<Return>', self.ok)
+        self.bind('<Escape>', self.cancel)
+        frm.pack()
 
     def getresult(self):
         return self.result
@@ -97,6 +115,11 @@ def showwarning(title, message, detail=None,
             default='cancel', icon='warning', sound='?', parent=common.root)
     return d.getresult()
 
-def askpassword(title, prompt, **kw):
-    q = QueryString(title, prompt, show='*', parent=common.root, **kw)
+def askpassword(title, prompt, button, **kw):
+    q = QueryString(title, prompt, show='*',
+            button=('行くにゃ！','遠慮するにゃ'), parent=common.root, **kw)
+    return q.getresult()
+
+def askstring(title, prompt, button, **kw):
+    q = QueryString(title, prompt, button, parent=common.root, **kw)
     return q.getresult()

@@ -6,18 +6,19 @@ import tkinter as tk
 from dialog import showerror, showinfo, showwarning
 from registry import Registry, NoSuchItem, ExistingItem
 import common
+import msg
 
-MIN_PASSWORD_LEN = 4
+MSG = msg.m['cat']
 
 class App(ttk.Frame):
-    ENT_OK = 1
-    ENT_NO_ENT = 2
-    ENT_NOT_FOUND = 3
     def __init__(self, root):
         super().__init__(root, padding=10)
         self.root = root
+        self.root.protocol('WM_DELETE_WINDOW', self.quit)
         self.pack(expand=True, fill=tk.BOTH)
-        ttk.Label(self, text='大切な合言葉にゃ！').grid(column=0, row=0,
+
+        # 合言葉
+        ttk.Label(self, text=MSG['rem-l-pass']).grid(column=0, row=0,
                 sticky=tk.E)
         self.var_passwd = tk.StringVar()
         self.g_passwd = ttk.Entry(self,
@@ -26,7 +27,9 @@ class App(ttk.Frame):
                 textvariable = self.var_passwd
         )
         self.g_passwd.grid(column=1, row=0, padx=10, sticky=tk.W+tk.E)
-        ttk.Label(self, text='何を知りたい/覚えたいにゃ？').grid(column=0, row=1, pady=5, sticky=tk.E)
+
+        # 項目
+        ttk.Label(self, text=MSG['rem-l-item']).grid(column=0, row=1, pady=5, sticky=tk.E)
         self.var_item = tk.StringVar()
         self.g_item = ttk.Entry(self,
                 exportselection = 0,
@@ -34,7 +37,9 @@ class App(ttk.Frame):
         )
         self.g_item.grid(column=1, row=1, padx=10, pady=5, sticky=tk.E+tk.W)
         self.g_item.bind('<Return>', self.check_and_show)
-        ttk.Label(self, text='覚えたい内容にゃ').grid(column=0, row=2, pady=5, sticky=tk.E+tk.N)
+
+        # 内容
+        ttk.Label(self, text=MSG['rem-l-cont']).grid(column=0, row=2, pady=5, sticky=tk.E+tk.N)
         t_frm = ttk.Frame(self, padding=5)
         self.g_value = tk.Text(t_frm,
                 #padx = 5,
@@ -54,16 +59,18 @@ class App(ttk.Frame):
                 sticky=tk.W+tk.E+tk.N+tk.S)
 
         b_frm = ttk.Frame(self, padding=5)
-        ttk.Button(b_frm, text='思い出すにゃ',
+
+        # ボタン
+        ttk.Button(b_frm, text=MSG['rem-b-show'],
                 command=self.show).pack(side=tk.LEFT)
-        ttk.Button(b_frm, text='覚えるにゃ',
+        ttk.Button(b_frm, text=MSG['rem-b-add'],
                 command=self.add).pack(side=tk.LEFT)
-        ttk.Button(b_frm, text='覚えなおすにゃ',
+        ttk.Button(b_frm, text=MSG['rem-b-upd'],
                 command=self.update).pack(side=tk.LEFT)
-        ttk.Button(b_frm, text='忘れるにゃ',
+        ttk.Button(b_frm, text=MSG['rem-b-fgt'],
                 command=self.remove).pack(side=tk.LEFT)
-        ttk.Button(b_frm, text='一覧にゃ',
-                command=self.list).pack(side=tk.LEFT)
+        #ttk.Button(b_frm, text=MSG['rem-b-list'],
+        #        command=self.list).pack(side=tk.LEFT)
         b_frm.grid(column=0, row=3, columnspan=2)
         self.columnconfigure(0, weight=0)
         self.columnconfigure(1, weight=1)
@@ -71,20 +78,39 @@ class App(ttk.Frame):
         self.rowconfigure(1, weight=0)
         self.rowconfigure(2, weight=1)
         self.rowconfigure(3, weight=0)
+
+        # メニューバー
+        self.g_menubar = tk.Menu(self.root)
+        self.root.config(menu=self.g_menubar)
+        # メニュー
+        # 表示
+        self.g_menu_info = tk.Menu(self.g_menubar, tearoff=0)
+        self.g_menubar.add_cascade(label=MSG['rem-me-sh'],
+                menu=self.g_menu_info)
+        self.g_menu_info.add('command', label=MSG['rem-me-sh-item'],
+                command=self.list)
+        self.g_menu_info.add('command', label=MSG['rem-me-sh-hint'],
+                command=self.show_hint)
+        # 設定
+        self.g_menu_settings = tk.Menu(self.g_menubar, tearoff=0)
+        self.g_menubar.add_cascade(label='設定', menu=self.g_menu_settings)
+        #self.g_menu_settings.add('command', label='言語', command=self.
+
         self.g_passwd.focus_set()
 
 
     def check_passwd(self):
         passwd = self.var_passwd.get()
         if len(passwd) == 0:
-            showerror('あわてるにゃ',
-                'パスワードを入れてないじゃにゃいか',
-                button='もう一度にゃ')
+            showerror(MSG['rem-cp-de-ttl1'],
+                MSG['rem-cp-de-msg1'],
+                button=MSG['rem-cp-de-btn1'])
             return False
         if not Registry.password_match(passwd):
-            showerror('あせるにゃ', 'パスワードが違うにゃ！よく確認するにゃ。', button='落ち着くにゃ')
+            showerror(MSG['rem-cp-de-ttl2'], MSG['rem-cp-de-msg2'],
+                    button=MSG['rem-cp-de-btn2'])
+            self.g_passwd.focus_set()
             return False
-        Registry.make_fernet(passwd)
         return True
 
     def getvalue(self):
@@ -114,20 +140,20 @@ class App(ttk.Frame):
     def show(self):
         item = self.var_item.get()
         if item == '':
-            showerror('無理にゃよ', '知りたいことを教えてくれにゃ・・・',
-                    button='またくるにゃ')
-            self.g_iterm.focus_set()
+            showerror(MSG['rem-sh-de-ttl1'], MSG['rem-sh-de-msg1'],
+                    button=MSG['rem-sh-de-btn1'])
+            self.g_item.focus_set()
             return
         try:
             value = Registry.get(item)
         except NoSuchItem:
-            showerror('だめにゃった', 'そんなことは知らないにゃ・・・',
-                    button='よく思い出すにゃ')
+            showerror(MSG['rem-sh-de-ttl2'], MSG['rem-sh-de-msg2'],
+                    button=MSG['rem-sh-de-btn2'])
             self.g_item.focus_set()
             return
-        _value = value[:40]+'...むにゃむにゃ' if len(value) > 40 else value
-        showinfo('みつけたにゃ！', 'あったにゃ！クリップボードにコピーしたにゃ。',
-                button='納得にゃあ', detail='%s' % _value)
+        _value = value[:40]+MSG['rem-sh-misc'] if len(value) > 40 else value
+        showinfo(MSG['rem-sh-di-ttl1'], MSG['rem-sh-di-msg1'],
+                button=MSG['rem-sh-di-btn1'], detail=_value)
         self.clipboard_clear()
         self.clipboard_append(value)
         self.reset_entry()
@@ -136,91 +162,118 @@ class App(ttk.Frame):
     def update(self):
         item = self.var_item.get()
         if item == '':
-            showerror('無理にゃよ', '覚えなおしたいことを教えてくれにゃ・・・',
-                    button='またくるにゃ')
+            showerror(MSG['rem-up-de-ttl1'], MSG['rem-up-de-msg1'],
+                    button=MSG['rem-up-de-btn1'])
             self.g_iterm.focus_set()
             return
         try:
             Registry.update(item, self.getvalue())
-        except:
-            showerror('だめにゃった', 'そんなことは知らないにゃ・・・',
-                    button='よく思い出すにゃ')
+        except NoSuchItem:
+            showerror(MSG['rem-up-de-ttl2'], MSG['rem-up-de-msg2'],
+                    button=MSG['rem-up-de-btn2'])
             self.g_item.focus_set()
             return
-        showinfo('できたにゃ', '覚え直したにゃ。',
-                button='納得にゃあ')
+        showinfo(MSG['rem-up-di-ttl1'], MSG['rem-up-di-msg1'], button=MSG['rem-up-di-btn1'])
         self.reset_entry()
 
     @verify_password
     def add(self):
         item = self.var_item.get()
         if item == '':
-            showerror('無理にゃよ', '覚えたいことを教えてくれにゃ・・・',
-                    button='またくるにゃ')
+            showerror(MSG['rem-ad-de-ttl1'], MSG['rem-ad-de-msg1'],
+                    button=MSG['rem-ad-de-ttl1'])
             self.g_iterm.focus_set()
             return
         value = self.getvalue()
         if value == '':
-            showerror('意味ないにゃ', '中身が空っぽにゃが？',
-                    button='またくるにゃ')
+            showerror(MSG['rem-ad-de-ttl2'], MSG['rem-ad-de-msg2'],
+                    button=MSG['rem-ad-de-btn2'])
             self.g_value.focus_set()
             return
         try:
             Registry.add(item, value)
         except ExistingItem:
-            showerror('やめるにゃ', 'その項目はもうあるにゃよ？上書きしたいなら覚えなおすにゃ',
-                    button='考え直すにゃ')
+            showerror(MSG['rem-ad-de-ttl3'], MSG['rem-ad-de-msg3'],
+                    button=MSG['rem-ad-de-btn3'])
             self.g_item.focus_set()
             return
-        showinfo('できたにゃ', '新しいことを覚えたにゃ。',
-                button='納得にゃあ')
+        showinfo(MSG['rem-ad-di-ttl1'], MSG['rem-ad-di-msg1'],
+                button=MSG['rem-ad-di-btn1'])
         self.reset_entry()
 
     @verify_password
     def remove(self):
         item = self.var_item.get()
         if item == '':
-            showerror('無理にゃよ', '何を忘れたいにゃ？',
-                    button='またくるにゃ')
+            showerror(MSG['rem-rm-de-ttl1'], MSG['rem-rm-de-msg1'],
+                    button=MSG['rem-rm-de-btn1'])
             self.g_iterm.focus_set()
             return
         try:
             value = Registry.get(item)
-            decision = showwarning('もう一度考えるにゃ', 'それは本当に忘れてもいいことにゃ？もう二度と思い出せないにゃよ？')
+            decision = showwarning(MSG['rem-rm-de-ttl2'], MSG['rem-rm-de-msg2'],
+                button=[
+                    (MSG['rem-rm-de-btn2-ok'],'ok'),
+                    (MSG['rem-rm-de-btn2-ca'],'cancel')
+                ])
             if decision != 'ok':
-                showinfo('わかったにゃ', 'そういう思い出もあるにゃ・・・')
+                showinfo(MSG['rem-rm-di-ttl1'], MSG['rem-rm-di-msg1'],
+                        MSG['rem-rm-di-btn1'])
                 self.reset_entry()
                 return
         except NoSuchItem:
-            showerror('それ何にゃ？', 'そんな思い出はないにゃ・・・',
-                    button='よく思い出すにゃ')
+            showerror(MSG['rem-rm-de-ttl3'], MSG['rem-rm-de-msg3'],
+                    button=MSG['rem-rm-de-btn3'])
             self.g_item.focus_set()
             return
         try:
             Registry.remove(item)
         except NoSuchItem:
-            showerror('ありえないにゃ', 'さっきまで覚えていたのに忘れたにゃ！',
-                    button='怖いにゃ')
+            showerror(MSG['rem-rm-de-ttl4'], MSG['rem-rm-de-msg4'],
+                    button=MSG['rem-rm-de-btn4'])
             self.g_item.focus_set()
             return
-        showinfo('できたにゃ', 'もうそのことは忘れたにゃ。忘れることも大切にゃ・・・',
-                button='諸行無常にゃあ')
+        showinfo(MSG['rem-rm-di-ttl2'], MSG['rem-rm-di-msg2'],
+                button=MSG['rem-rm-di-btn2'])
         self.reset_entry()
 
     @verify_password
     def list(self):
         items = Registry.list()
+        if items is None:
+            self.reset_entry()
+            return
         if len(items) == 0:
-            showinfo('にゃぁぁ', 'にゃあはまだ何も覚えてないにゃ・・・')
+            showinfo(MSG['rem-li-di-ttl1'], MSG['rem-li-di-msg1'],
+                    button=MSG['rem-li-di-btn1'])
         else:
-            showinfo('にゃ～ん', '忘れたのかにゃ？特別に見せてやるにゃよ。おさかな持ってくるにゃ',
-                button='わかったにゃ！', detail=','.join(items)
+            showinfo(MSG['rem-li-di-ttl2'], MSG['rem-li-di-msg2'],
+                button=MSG['rem-li-di-btn2'], detail=','.join(items)
             )
         self.reset_entry()
+
+    def show_hint(self):
+        showinfo(MSG['rem-sh-di-ttl1'], MSG['rem-sh-di-msg1'],
+                button=MSG['rem-sh-di-btn1'],
+                detail=Registry.hint)
+
+    def quit(self):
+        if Registry.error:
+            msg = MSG['rem-qu-dw-dtl1']
+        else:
+            msg = None
+        decision = showwarning(MSG['rem-qu-dw-ttl1'], MSG['rem-qu-dw-msg1'],
+            detail=msg,
+            button=[
+                (MSG['rem-qu-dw-btn1-ok'], 'ok'),
+                (MSG['rem-qu-dw-btn1-ca'], 'cancel')
+            ])
+        if decision == 'ok':
+            Registry.quit()
 
 if __name__ == '__main__':
     Registry.load()
     common.root = Tk()
-    common.root.title('猫の秘密帳～おさかな食べさせるにゃ！')
+    common.root.title(MSG['rem-main-title'])
     App(common.root)
     common.root.mainloop()

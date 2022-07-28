@@ -1,3 +1,5 @@
 __pycache__
 *.pyc
-record.json
+*.dat
+*.bak
+*.dir
