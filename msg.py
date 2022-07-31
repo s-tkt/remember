@@ -35,6 +35,16 @@ m = {
         'rem-up-de-ttl2': 'エラー',
         'rem-up-de-msg2': '項目がみつかりません。',
         'rem-up-de-btn2': 'OK',
+        'rem-up-de-ttl3': 'エラー',
+        'rem-up-de-msg3': '内容がありません。',
+        'rem-up-de-btn3': 'OK',
+
+        'rem-ad-de-ttl1': 'エラー',
+        'rem-ad-de-msg1': '項目を入れてください。',
+        'rem-ad-de-btn1': 'OK',
+        'rem-ad-de-ttl2': 'エラー',
+        'rem-ad-de-msg2': '内容を入れてください。',
+        'rem-ad-de-btn2': 'OK',
         'rem-ad-de-ttl3': 'エラー',
         'rem-ad-de-msg3': 'その項目は既に存在します。',
         'rem-ad-de-btn3': 'OK',
@@ -69,9 +79,9 @@ m = {
         'rem-li-di-msg2': '項目一覧',
         'rem-li-di-btn2': 'OK',
 
-        'rem-sh-di-ttl1': '情報',
-        'rem-sh-di-msg1': 'パスワードのヒントです。',
-        'rem-sh-di-btn1': 'OK',
+        'rem-hi-di-ttl1': '情報',
+        'rem-hi-di-msg1': 'パスワードのヒントです。',
+        'rem-hi-di-btn1': 'OK',
 
         'rem-qu-dw-ttl1': '警告',
         'rem-qu-dw-msg1': '本当に終了しますか？',
@@ -146,6 +156,10 @@ m = {
         'rem-up-de-ttl2': 'Error',
         'rem-up-de-msg2': 'Input an item.',
         'rem-up-de-btn2': 'OK',
+        'rem-up-de-ttl3': 'Error',
+        'rem-up-de-msg3': 'Input content.',
+        'rem-up-de-btn3': 'OK',
+
         'rem-ad-de-ttl3': 'Error',
         'rem-ad-de-msg3': 'That item is existing.',
         'rem-ad-de-btn3': 'OK',
@@ -180,9 +194,9 @@ m = {
         'rem-li-di-msg2': 'Here you are.',
         'rem-li-di-btn2': 'OK',
 
-        'rem-sh-di-ttl1': 'Info',
-        'rem-sh-di-msg1': 'Remember your password with a hint.',
-        'rem-sh-di-btn1': 'OK',
+        'rem-hi-di-ttl1': 'Info',
+        'rem-hi-di-msg1': 'Remember your password with a hint.',
+        'rem-hi-di-btn1': 'OK',
 
         'rem-qu-dw-ttl1': 'Warning',
         'rem-qu-dw-msg1': 'Are you realy quit?',
@@ -222,7 +236,7 @@ m = {
         'reg-qu-de-btn1': 'OK',
     },
     'cat' : {
-        'rem-main-title': '猫の秘密帳～おさかな食べさせるにゃ！',
+        'rem-main-title': 'にゃあの秘密帳～おさかな食べさせるにゃ！',
 
         'rem-l-pass' : '合言葉にゃ！',
         'rem-l-item': '何についてにゃ？',
@@ -233,8 +247,12 @@ m = {
         'rem-b-fgt': '忘れるにゃ',
         'rem-b-list': '一覧にゃ',
         'rem-me-sh': '教えてにゃ',
-        'rem-me-sh-item': '何を覚えたにゃ？',
+        'rem-me-sh-item': '今まで覚えたことにゃ',
         'rem-me-sh-hint': 'パスワード忘れたにゃ！',
+        'rem-me-co': '設定にゃ',
+        'rem-me-da': 'ノートにゃ',
+        'rem-me-da-ex': '記録を書き写すにゃ',
+        'rem-me-da-im': '記録を取り込むにゃ',
 
         'rem-cp-de-ttl1': 'あわてるにゃ',
         'rem-cp-de-msg1': 'パスワードを入れてないじゃにゃいか',
@@ -260,12 +278,15 @@ m = {
         'rem-up-de-ttl2': 'それ何にゃ？',
         'rem-up-de-msg2': 'そんなことは知らないにゃ',
         'rem-up-de-btn2': 'よく思い出すにゃ',
+        'rem-up-de-ttl3': '内容がないにゃ',
+        'rem-up-de-msg3': '実は忘れたいのかにゃ？',
+        'rem-up-de-btn3': 'またくるにゃ',
         'rem-up-di-ttl1': 'できたにゃ',
         'rem-up-di-msg1': '覚えなおしたにゃ。',
         'rem-up-di-btn1': '心変わりにゃ？',
 
         'rem-ad-de-ttl1': '無理にゃよ',
-        'rem-ad-de-msg1': '覚えなおしたいことを教えてくれにゃ・・・',
+        'rem-ad-de-msg1': '覚えたいことを教えてくれにゃ・・・',
         'rem-ad-de-btn1': 'またくるにゃ',
         'rem-ad-de-ttl2': '意味ないにゃ',
         'rem-ad-de-msg2': '中身が空っぽにゃが？',
@@ -275,7 +296,7 @@ m = {
         'rem-ad-de-btn3': '考え直すにゃ',
         'rem-ad-di-ttl1': 'できたにゃ',
         'rem-ad-di-msg1': '新しいことを覚えたにゃ。',
-        'rem-ad-di-btn1': '心変わりにゃ？',
+        'rem-ad-di-btn1': '忘れないにゃ',
 
         'rem-rm-de-ttl1': '無理にゃよ',
         'rem-rm-de-msg1': '何を忘れたいにゃ？',
@@ -294,19 +315,21 @@ m = {
         'rem-rm-de-msg4': 'さっきまで覚えていたのに忘れたにゃ！他にどっかのにゃんこがさわってないかにゃ？アプリを２つ起ち上げているとか',
         'rem-rm-de-btn4': '怖いにゃ・・',
         'rem-rm-di-ttl2': 'できたにゃ',
-        'rem-rm-di-msg2': 'もうそのことは忘れたにゃ。\n忘れることも大切にゃ。',
+        'rem-rm-di-msg2': 'もうそのことは忘れたにゃ。\n'
+                '忘れることも大切にゃ。',
         'rem-rm-di-btn2': '諸行無常にゃねえ',
 
         'rem-li-di-ttl1': 'にゃぁぁ',
         'rem-li-di-msg1': 'にゃあはまだ何もおぼえてないにゃん・・・',
         'rem-li-di-btn1': 'またくるにゃ',
         'rem-li-di-ttl2': 'にゃ～ん',
-        'rem-li-di-msg2': '忘れたにゃ？特別に見せてやるにゃ。おさかなもってくるにゃ。',
+        'rem-li-di-msg2': '忘れたにゃ？特別に見せてやるにゃ。'
+                'おさかなもってくるにゃ。',
         'rem-li-di-btn2': 'わかったにゃ！',
 
-        'rem-sh-di-ttl1': 'ヒントにゃ',
-        'rem-sh-di-msg1': 'パスワード忘れたにゃ？ヒントで思い出すにゃ！',
-        'rem-sh-di-btn1': '思い出したにゃ',
+        'rem-hi-di-ttl1': 'ヒントにゃ',
+        'rem-hi-di-msg1': 'パスワード忘れたにゃ？ヒントで思い出すにゃ！',
+        'rem-hi-di-btn1': '思い出したにゃ',
 
         'rem-qu-dw-ttl1': '終わるにゃ',
         'rem-qu-dw-msg1': 'もう帰ってもいいにゃん？',
@@ -314,14 +337,62 @@ m = {
         'rem-qu-dw-btn1-ok': 'また会うにゃ～',
         'rem-qu-dw-btn1-ca': 'まだにゃ！',
 
+        'rem-ex-df-ttl1': 'どこに吸いだすにゃ？',
+        'rem-ex-de-ttl1': 'だめにゃ',
+        'rem-ex-de-msg1': 'ファイルに書けなかったにゃ。',
+        'rem-ex-de-btn1': '調べるにゃ！',
+
+        'rem-im-df-ttl1': 'どのファイルから吸込むにゃ？',
+        'rem-im-de-ttl1': 'だめにゃ',
+        'rem-im-de-msg1': '書き方を間違えているようにゃが？',
+        'rem-im-de-btn1': '調べるにゃ！',
+        'rem-im-dw-ttl1': '待つにゃ',
+        'rem-im-dw-msg1': 'いくつかの項目ですでに覚えていることを'
+                        '書き直してしまうにゃ。いいのかにゃ',
+        'rem-im-dw-btn1-ok': '覚えなおすにゃ',
+        'rem-im-dw-btn1-ca': 'や、やめるにゃ',
+        'rem-im-de-ttl2': 'だめにゃ',
+        'rem-im-de-msg2': 'CSVファイルにカラム数が2でない行があるにゃ。',
+        'rem-im-de-btn2': '直すにゃ',
+        'rem-im-de-ttl3': 'だめにゃ',
+        'rem-im-de-msg3': 'JSONファイルに変なものが入っているにゃ。',
+        'rem-im-de-btn3': '直すにゃ',
+        'rem-im-de-ttl4': 'だめにゃ',
+        'rem-im-de-msg4': 'ファイルの中に同じ項目があるにゃよ？',
+        'rem-im-de-btn4': '直すにゃ',
+
+        'reg-da-de-ttl1': '一大事にゃ！！',
+        'reg-da-de-msg-r': '記憶ファイルが読めないにゃ！なんとかするにゃ！',
+        'reg-da-de-msg-w': '記憶ファイルに書き込めないにゃ！'
+                        'なんとかするにゃ！',
+        'reg-da-de-msg-c': '記憶ファイルに読み書きできないにゃ！'
+                        'なんとかするにゃ！',
+
         'reg-lo-dw-ttl1': '初めてにゃ？',
-        'reg-lo-dw-msg1': 'おみゃあさん、初めて見るにゃ。違うにゃ？もし初めてでないにゃら何かおかしいにゃ。にゃあのノートが見当たらないにゃ。',
+        'reg-lo-dw-msg1': 'おみゃあさん、初めて見るにゃ。違うにゃ？\n'
+                'もし初めてでないにゃら何かおかしいにゃ。\n'
+                'にゃあのノートが見当たらないにゃ。\n'
+                '初めてなら、これからおみゃあさん専用のノートを作るにゃ。',
         'reg-lo-dw-btn1-ok': '初めてにゃ！',
         'reg-lo-dw-btn1-ca': 'やめるにゃ！',
 
+        'reg-gp-da-ttl1': '準備にゃ',
+        'reg-gp-da-msg1': '秘密の合言葉を決めるにゃ。\n'
+            '忘れたら何も思い出せなくなるにゃ。\n'
+            'しっかり覚えるにゃ！',
+        'reg-gp-da-btn1-ok': 'もちろんにゃ！',
+        'reg-gp-da-btn1-ca': '今はやめておくにゃ',
+        'reg-gp-da-ttl2': 'もう一度にゃ',
+        'reg-gp-da-msg2': '念のためもう一度合言葉を教えるにゃ。',
+        'reg-gp-da-btn2-ok': 'これにゃ！',
+        'reg-gp-da-btn2-ca': '引き返すにゃ',
+        'reg-gp-de-ttl1': 'あわてるでないにゃ',
+        'reg-gp-de-msg1': 'パスワードが不一致にゃよ。',
+        'reg-gp-de-btn1': '最初からにゃ',
+
         'reg-lo-in-ttl1': 'またにゃ！',
         'reg-lo-in-msg1': 'にゃあはいつでもここにいるにゃ。',
-        'reg-lo-in-btn1:': 'またにゃ！',
+        'reg-lo-in-btn1': 'またにゃ！',
 
         'reg-lo-da-ttl1': '教えるにゃ',
         'reg-lo-da-msg1': '合言葉のヒントを決めるにゃ。',
@@ -333,17 +404,17 @@ m = {
         'reg-lo-de-btn1': 'バージョンアップしてにゃ',
 
         'reg-sa-dw-ttl1': 'どうするにゃ？',
-        'reg-sa-dw-msg1': '何かまずいことになってるにゃろ？本当に記録するにゃ？',
+        'reg-sa-dw-msg1': '何かまずいことになってるにゃろ？本当に記録するにゃ？中身を書きだした方がいいんじゃにゃあか？',
         'reg-sa-dw-btn1-ok': 'するにゃ！',
         'reg-sa-dw-btn1-ca': 'や、やめるにゃ',
 
         'reg-sa-di-ttl1': '気を付けるにゃ',
-        'reg-sa-di-msg1': 'なんとかしてくれにゃ',
+        'reg-sa-di-msg1': 'なんとかしてくれにゃ・・・',
         'reg-sa-di-btn1': '祈るにゃ',
 
         'reg-qu-de-ttl1': 'あ～あ・・・',
         'reg-qu-de-msg1': 'まずいことになったにゃ。直しきれないにゃ',
-        'reg-qu-de-btn1': '観念したにゃ・・・',
+        'reg-qu-de-btn1': '観念したにゃん！',
     },
 }
 

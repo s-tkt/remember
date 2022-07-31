@@ -44,15 +44,13 @@ class PlaceDialog(simpledialog.Dialog):
         MessageBeep(self.sound)
 
     def __c2f(self, c:str):
-        if c == 'ok':
-            return self.ok
         if c == 'cancel':
             return self.cancel
-        return self.cancel
+        return lambda: self.ok(c)
 
     def buttonbox(self):
         frm = tk.Frame(self)
-        for text, command in self.button:
+        for text, command in reversed(self.button):
             w = tk.Button(frm, text=text, command=self.__c2f(command))
             w.pack(side=tk.RIGHT, padx=5, pady=5)
             if command == 'ok':
@@ -61,8 +59,8 @@ class PlaceDialog(simpledialog.Dialog):
                 self.bind('<Escape>', self.cancel)
         frm.pack()
 
-    def ok(self, event=None):
-        self.result = 'ok'
+    def ok(self, command, event=None):
+        self.result = command
         super().ok(event)
 
     def cancel(self, event=None):
@@ -117,9 +115,10 @@ def showwarning(title, message, detail=None,
 
 def askpassword(title, prompt, button, **kw):
     q = QueryString(title, prompt, show='*',
-            button=('行くにゃ！','遠慮するにゃ'), parent=common.root, **kw)
+            button=button, parent=common.root, **kw)
     return q.getresult()
 
 def askstring(title, prompt, button, **kw):
     q = QueryString(title, prompt, button, parent=common.root, **kw)
     return q.getresult()
+

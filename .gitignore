@@ -3,3 +3,6 @@ __pycache__
 *.dat
 *.bak
 *.dir
+*.json
+*.csv
+bak

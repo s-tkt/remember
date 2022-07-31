@@ -8,10 +8,12 @@ from functools import wraps
 import zlib
 import base64
 import json
+import csv
 import pickle
 import dbm
 from cryptography.fernet import Fernet
-from dialog import showinfo, showerror, showwarning, askpassword
+import bcrypt
+from dialog import showinfo, showerror, showwarning, askpassword, askstring
 import common
 import msg
 
@@ -37,7 +39,7 @@ class Registry:
     error = False
     lang = 'cat'
     syskeys = ('version', 'password', 'n_add', 'n_remove', 'n_update',
-            'last_saved', 'created', 'lang')
+            'last_saved', 'created', 'lang', 'hint')
 
     @classmethod
     def get_fernet_key(cls, passwd: str) -> bytes:
@@ -45,13 +47,18 @@ class Registry:
         digest = sha.digest()[:32]
         return base64.urlsafe_b64encode(digest)
 
-    @classmethod
+    '''@classmethod
     def get_double_hashed(cls, passwd: str) -> str:
         hashed = cls.get_fernet_key(passwd)
         sha = hashlib.sha256(hashed)
         digest = sha.digest()
         sha = hashlib.sha256(digest)
-        return sha.hexdigest()
+        return sha.hexdigest()'''
+
+    @classmethod
+    def get_hashed(cls, passwd: str) -> str:
+        salt = bcrypt.gensalt(rounds=10, prefix=b'2a')
+        return bcrypt.hashpw(passwd.encode(), salt)
 
     @classmethod
     def make_fernet(cls, passwd: str) -> Fernet:
@@ -72,15 +79,23 @@ class Registry:
     @classmethod
     def getpassword(cls) -> str:
         while(True):
-            passwd1 = askpassword('準備にゃ', '秘密の合言葉を決めるにゃ。忘れたら何も思い出せなくなるにゃ。しっかり覚えるにゃ！',
-                    button=('もちろんにゃ！', '今はちょっと、にゃ'))
+            passwd1 = askpassword(MSG['reg-gp-da-ttl1'],
+                    MSG['reg-gp-da-msg1'],
+                    button = (MSG['reg-gp-da-btn1-ok'],
+                        MSG['reg-gp-da-btn1-ca'])
+                )
             if passwd1 == None:
                 return None
-            passwd2 = askpassword('準備にゃ', '念のためもう一度合言葉を教えるにゃ。', button=('これにゃ！', 'やめるにゃ'))
+            passwd2 = askpassword(MSG['reg-gp-da-ttl2'],
+                MSG['reg-gp-da-msg2'],
+                button = (MSG['reg-gp-da-btn2-ok'],
+                    MSG['reg-gp-da-btn2-ca']))
             if passwd2 == None:
                 return None
             if passwd1 != passwd2:
-                showerror('あわてるでないにゃ', 'パスワードが不一致にゃよ。')
+                showerror(MSG['reg-gp-de-ttl1'],
+                    MSG['reg-gp-de-msg1'],
+                    button = MSG['reg-gp-de-btn1'])
             else:
                 break
         return passwd1
@@ -89,21 +104,21 @@ class Registry:
     @classmethod
     def dbaccesserror(cls, e: Exception, mode:str='r') -> None:
         if mode == 'r':
-            msg = '記憶ファイルが読めないにゃ！なんとかするにゃ！'
+            msg = MSG['reg-da-de-msg-r']
         elif mode == 'w':
-            msg = '記憶ファイルが書き込めないにゃ！なんとか書き込めるようにしてくれにゃああああ！',
+            msg = MSG['reg-da-de-msg-w']
         else:
-            msg = '記憶ファイルに読み書きできないにゃ！なんとかするにゃああああ！',
+            msg = MSG['reg-da-de-msg-c']
         cls.error = True
         errormsg = '%s\n%s' % (str(e), traceback.format_exc())
-        showerror('一大事にゃ！', msg, detail=errormsg)
+        showerror(MSG['reg-da-de-ttl1'], msg, detail=errormsg)
 
     # DBアクセスチェックのデコレータにゃ
     def dbaccess(mode='r', ret=...):
         def _dbaccess(func):
-            def wrapper(*args, **kwargs):
+            def wrapper(cls, *args, **kwargs):
                 try:
-                    return func(*args, **kwargs)
+                    return func(cls, *args, **kwargs)
                 except dbm.error as e:
                     cls.dbaccesserror(e, mode)
                     if ret == 'exit':
@@ -120,8 +135,8 @@ class Registry:
         # 初めて使うにゃ
         if os.path.exists(cls.PATH + '.dat') == False:
             decision = showwarning(MSG['reg-lo-dw-ttl1'],
-                MSG['reg-lo-dw-ttk1'],
-                button=[(MSG['reg-lo-dw-btn1-ok'],'cancel'),
+                MSG['reg-lo-dw-msg1'],
+                button=[(MSG['reg-lo-dw-btn1-ca'],'cancel'),
                     (MSG['reg-lo-dw-btn1-ok'],'ok')])
             if decision == 'cancel':
                 showinfo(MSG['reg-lo-in-ttl1'], MSG['reg-lo-in-msg1'],
@@ -132,11 +147,11 @@ class Registry:
                 showinfo(MSG['reg-lo-in-ttl1'], MSG['reg-lo-in-msg1'],
                         button=MSG['reg-lo-in-btn1'])
                 sys.exit(0)
-            cls.hint = ascstring(MSG['reg-lo-da-ttl1'],
+            cls.hint = askstring(MSG['reg-lo-da-ttl1'],
                     MSG['reg-lo-da-msg1'],
                     button=(MSG['reg-lo-da-btn1-ok'],
                         MSG['reg-lo-da-btn1-ca']))
-            cls.password = cls.get_double_hashed(passwd)
+            cls.password = cls.get_hashed(passwd)
             cls.db = dbm.open(Registry.PATH, 'c')
             cls.save(init=True)
 
@@ -147,7 +162,9 @@ class Registry:
                 showerror(MSG['reg-lo-de-ttl1'], MSG['reg-lo-de-msg1'],
                         MSG['reg-lo-de-btn1'])
                 cls.quit()
-            cls.password = db['password'].decode()
+            cls.password = db['password']
+            cls.hint = db['hint'].decode()
+            cls.lang = db['lang'].decode()
             cls.n_add = int(db['n_add'])
             cls.n_remove = int(db['n_remove'])
             cls.n_update = int(db['n_update'])
@@ -175,6 +192,7 @@ class Registry:
             db['version'] = cls.version
             db['created'] = now
             db['password'] = cls.password
+            db['hint'] = cls.hint
             db['lang'] = cls.lang
         db['n_add'] = str(cls.n_add)
         db['n_remove'] = str(cls.n_remove)
@@ -205,7 +223,7 @@ class Registry:
 
     @classmethod
     def password_match(cls, passwd: str) -> bool:
-        if cls.get_double_hashed(passwd) != cls.password:
+        if bcrypt.checkpw(passwd.encode(), cls.password) == False:
             return False
         if cls.fernet is None:
             cls.make_fernet(passwd)
@@ -263,4 +281,48 @@ class Registry:
         for key in cls.get_keys():
             item_list.append(cls.decrypt(key))
         return item_list
+
+    @classmethod
+    @dbaccess('r', None)
+    def export(cls, filename: str):
+        # データが多いかもしれにゃから、1行ずつ書いていくにゃよ
+        with open(filename, 'w', newline='', encoding='utf-8') as f:
+            ext = os.path.splitext(filename)[1]
+            if ext == '.json':
+                je = json.JSONEncoder(ensure_ascii=False)
+                first = True
+                for key, val in cls.db.items():
+                    if key.decode() in cls.syskeys:
+                        continue
+                    ekey = je.encode(cls.decrypt(key.decode()))
+                    evalue = je.encode(cls.decrypt(val.decode()))
+                    if first == False:
+                        f.write(',\n')
+                    else:
+                        f.write('{\n')
+                        first = False
+                    f.write('    %s: %s' % (ekey, evalue))
+                f.write('\n}\n')
+            elif ext == '.csv':
+                writer = csv.writer(f)
+                writer.writerow(['item', 'value'])
+                for key, val in cls.db.items():
+                    if key.decode() in cls.syskeys:
+                        continue
+                    writer.writerow([
+                            cls.decrypt(key.decode()),
+                            cls.decrypt(val.decode())
+                        ])
+
+
+    @classmethod
+    @dbaccess('c', None)
+    def import_(cls, imp: dict):
+        for impkey in imp:
+            try:
+                k, v = cls.find(impkey)
+                cls.db[k] = cls.encrypt(imp[impkey])
+            except NoSuchItem:
+                cls.db[cls.encrypt(impkey)] = cls.encrypt(imp[impkey])
+        cls.db.sync()
 
