@@ -278,8 +278,21 @@ class App(ttk.Frame):
             showinfo(MSG['rem-li-di-ttl1'], MSG['rem-li-di-msg1'],
                     button=MSG['rem-li-di-btn1'])
         else:
+            def fmt(items):
+                ret = ''
+                s = ''
+                for i in items:
+                    if len(s) + len(i) > 50:
+                        ret += ',\n%s' % s
+                        s = '"%s"' % i
+                    else:
+                        s += ',"%s"' % i
+                if s != '':
+                    ret += ',\n%s' % s
+                return ret
+
             showinfo(MSG['rem-li-di-ttl2'], MSG['rem-li-di-msg2'],
-                button=MSG['rem-li-di-btn2'], detail=','.join(items)
+                button=MSG['rem-li-di-btn2'], detail=fmt(items)
             )
 
     def hint(self):
@@ -325,14 +338,14 @@ class App(ttk.Frame):
             self.reset_entry()
 
     def __json_check_dup(self, d):
-        uniq_key = {x[0] for x in d.keys()}
+        uniq_key = {x[0] for x in d}
         if len(d) != len(uniq_key):
-            dup_key = [x[0] for x in d.keys()]
+            dup_key = [x[0] for x in d]
             for u in uniq_key:
                 self.dup_key.remove(u)
             raise DupKeyError(dup_key)
         else:
-            return d
+            return {x[0]:x[1] for x in d}
 
     @verify_password
     def import_(self):

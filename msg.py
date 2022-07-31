@@ -335,7 +335,7 @@ m = {
         'rem-qu-dw-msg1': 'もう帰ってもいいにゃん？',
         'rem-qu-dw-dtl1': '何か故障があったにゃ・・・\n覚悟はいいにゃ？',
         'rem-qu-dw-btn1-ok': 'また会うにゃ～',
-        'rem-qu-dw-btn1-ca': 'まだにゃ！',
+        'rem-qu-dw-btn1-ca': '待つにゃ！',
 
         'rem-ex-df-ttl1': 'どこに吸いだすにゃ？',
         'rem-ex-de-ttl1': 'だめにゃ',
