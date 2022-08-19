@@ -42,6 +42,7 @@ class PlaceDialog(simpledialog.Dialog):
             detail = tk.Label(master, text = self.detail)
             detail.pack(padx=5, pady=5)
         MessageBeep(self.sound)
+        return self
 
     def __c2f(self, c:str):
         if c == 'cancel':
@@ -99,18 +100,48 @@ class QueryString(simpledialog._QueryString):
         return self.result
 
 
-def showinfo(title, message, detail=None, button='納得にゃ'):
-    PlaceDialog(title, message, detail=detail, button=[(button,'ok')],
-            default='ok', icon='info', sound='ok', parent=common.root)
+# tkinter/simpledialog.py からいただいたにゃ。ありがとうにゃ。
+def place_window(w, parent=None):
+    w.wm_withdraw() # Remain invisible while we figure out the geometry
+    w.update_idletasks() # Actualize geometry information
 
-def showerror(title, message, detail=None, button='勘弁にゃ'):
+    minwidth = w.winfo_reqwidth()
+    minheight = w.winfo_reqheight()
+    maxwidth = w.winfo_vrootwidth()
+    maxheight = w.winfo_vrootheight()
+    if parent is not None and parent.winfo_ismapped():
+        x = parent.winfo_rootx() + (parent.winfo_width() - minwidth) // 2
+        y = parent.winfo_rooty() + (parent.winfo_height() - minheight) // 2
+        vrootx = w.winfo_vrootx()
+        vrooty = w.winfo_vrooty()
+        x = min(x, vrootx + maxwidth - minwidth)
+        x = max(x, vrootx)
+        y = min(y, vrooty + maxheight - minheight)
+        y = max(y, vrooty)
+        if w._windowingsystem == 'aqua':
+            # Avoid the native menu bar which sits on top of everything.
+            y = max(y, 22)
+    else:
+        x = (w.winfo_screenwidth() - minwidth) // 2
+        y = (w.winfo_screenheight() - minheight) // 2
+
+    w.wm_maxsize(maxwidth, maxheight)
+    w.wm_geometry('+%d+%d' % (x, y))
+    w.wm_deiconify() # Become visible at the desired location
+
+
+def showinfo(title, message, detail=None, button='納得にゃ', parent=common.root):
+    PlaceDialog(title, message, detail=detail, button=[(button,'ok')],
+            default='ok', icon='info', sound='ok', parent=parent)
+
+def showerror(title, message, detail=None, button='勘弁にゃ', parent=common.root):
     PlaceDialog(title, message, detail=detail, button=[(button, 'ok')],
-            default='ok', icon='error', sound='!', parent=common.root)
+            default='ok', icon='error', sound='!', parent=parent)
 
 def showwarning(title, message, detail=None,
-        button=[('行くにゃ！','ok'),('嫌にゃ！','cancel')]):
+        button=[('行くにゃ！','ok'),('嫌にゃ！','cancel')], parent=common.root):
     d = PlaceDialog(title, message, detail=detail, button=button,
-            default='cancel', icon='warning', sound='?', parent=common.root)
+            default='cancel', icon='warning', sound='?', parent=parent)
     return d.getresult()
 
 def askpassword(title, prompt, button, **kw):

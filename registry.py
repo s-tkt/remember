@@ -207,7 +207,8 @@ class Registry:
             cls.db.close()
         except Exception as e:
             showerror(MSG['reg-qu-de-ttl1'], MSG['reg-qu-de-msg1'], detail=str(e), button=MSG['reg-qu-de-btn1'])
-        sys.exit(0)
+            # どうしようもないにゃ。ズドンと終わらせるにゃ
+            os._exit(-1)
 
     # DBからにゃあが覚えたデータのキーだけとってくるにゃ
     # 毎回DBから検索するのは効率が悪いかもしれないにゃ

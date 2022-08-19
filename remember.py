@@ -1,14 +1,19 @@
 import os
 import sys
+import threading
+import traceback
 from functools import wraps
 from tkinter import Tk, ttk
+from tkinter.scrolledtext import ScrolledText
 import tkinter as tk
-from dialog import showerror, showinfo, showwarning
+from dialog import showerror, showinfo, showwarning, place_window
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 import csv
 import json
-from registry import Registry, NoSuchItem, ExistingItem
 import common
+from registry import Registry, NoSuchItem, ExistingItem
+from setting import Setting
+from config import Config, ConfigLoadError, ConfigSaveError
 import msg
 
 MSG = msg.m['cat']
@@ -31,9 +36,21 @@ class App(ttk.Frame):
     def __init__(self, root):
         super().__init__(root, padding=10)
         self.root = root
+        try:
+            self.config = Config()
+        except ConfigLoadError as ce:
+            showerror(MSG['rem-c-load-ttl'], MSG['rem-c-load-msg'],
+                detail=traceback.format_exc(),
+                button=MSG['rem-c-load-btn'])
+            self.root.destroy()
+            return
         self.root.protocol('WM_DELETE_WINDOW', self.quit)
         self.pack(expand=True, fill=tk.BOTH)
 
+        # タイマー
+        self.cb_wait = self.config['interval']
+        self.cb_thread = None
+        self.last_remember = None
         # 合言葉
         ttk.Label(self, text=MSG['rem-l-pass']).grid(column=0, row=0,
                 sticky=tk.E)
@@ -57,37 +74,24 @@ class App(ttk.Frame):
 
         # 内容
         ttk.Label(self, text=MSG['rem-l-cont']).grid(column=0, row=2, pady=5, sticky=tk.E+tk.N)
-        t_frm = ttk.Frame(self, padding=5)
-        self.g_value = tk.Text(t_frm,
-                #padx = 5,
-                #pady = 5,
+        self.g_value = tk.scrolledtext.ScrolledText(master=self,
                 height = 10,
                 width = 30,
                 wrap = tk.CHAR,
                 exportselection = 0,
         )
-        self.g_value.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        self.g_scroll = ttk.Scrollbar(t_frm,
-                orient=tk.VERTICAL,
-                command=self.g_value.yview)
-        self.g_value['yscrollcommand'] = self.g_scroll.set
-        self.g_scroll.pack(anchor=tk.E, expand=True, fill=tk.Y)
-        t_frm.grid(column=1, row=2,
+        self.g_value.grid(column=1, row=2,
                 sticky=tk.W+tk.E+tk.N+tk.S)
 
+        # ボタン
         b_frm = ttk.Frame(self, padding=5)
 
-        # ボタン
         ttk.Button(b_frm, text=MSG['rem-b-show'],
                 command=self.show).pack(side=tk.LEFT)
         ttk.Button(b_frm, text=MSG['rem-b-add'],
                 command=self.add).pack(side=tk.LEFT)
         ttk.Button(b_frm, text=MSG['rem-b-upd'],
                 command=self.update).pack(side=tk.LEFT)
-        ttk.Button(b_frm, text=MSG['rem-b-fgt'],
-                command=self.remove).pack(side=tk.LEFT)
-        #ttk.Button(b_frm, text=MSG['rem-b-list'],
-        #        command=self.list).pack(side=tk.LEFT)
         b_frm.grid(column=0, row=3, columnspan=2)
         self.columnconfigure(0, weight=0)
         self.columnconfigure(1, weight=1)
@@ -100,6 +104,11 @@ class App(ttk.Frame):
         self.g_menubar = tk.Menu(self.root)
         self.root.config(menu=self.g_menubar)
         # メニュー
+        self.g_menu_ope = tk.Menu(self.g_menubar, tearoff=0)
+        self.g_menubar.add_cascade(label=MSG['rem-me-ope'],
+                menu=self.g_menu_ope)
+        self.g_menu_ope.add('command', label=MSG['rem-me-ope-rm'],
+                command=self.remove)
         # 表示
         self.g_menu_info = tk.Menu(self.g_menubar, tearoff=0)
         self.g_menubar.add_cascade(label=MSG['rem-me-sh'],
@@ -111,7 +120,8 @@ class App(ttk.Frame):
         # 設定
         self.g_menu_settings = tk.Menu(self.g_menubar, tearoff=0)
         self.g_menubar.add_cascade(label='設定', menu=self.g_menu_settings)
-        #self.g_menu_settings.add('command', label='言語', command=self.
+        self.g_menu_settings.add('command', label=MSG['rem-me-se-conf'],
+                command=self.setting)
         # データ
         self.g_menu_data = tk.Menu(self.g_menubar, tearoff=0)
         self.g_menubar.add_cascade(label=MSG['rem-me-da'],
@@ -161,27 +171,38 @@ class App(ttk.Frame):
         return wrapper
 
 
-    @verify_password
-    def show(self):
-        item = self.var_item.get()
+    # show() と list() で使いまわすにゃ
+    def __show(self, item:str, focus=None, reset=False, parent=common.root):
         if item == '':
             showerror(MSG['rem-sh-de-ttl1'], MSG['rem-sh-de-msg1'],
-                    button=MSG['rem-sh-de-btn1'])
-            self.g_item.focus_set()
+                    button=MSG['rem-sh-de-btn1'], parent=parent)
+            if focus:
+                focus.focus_set()
             return
         try:
             value = Registry.get(item)
         except NoSuchItem:
             showerror(MSG['rem-sh-de-ttl2'], MSG['rem-sh-de-msg2'],
-                    button=MSG['rem-sh-de-btn2'])
-            self.g_item.focus_set()
+                    button=MSG['rem-sh-de-btn2'], parent=parent)
+            if focus:
+                focus.focus_set()
             return
         _value = value[:40]+MSG['rem-sh-misc'] if len(value) > 40 else value
         showinfo(MSG['rem-sh-di-ttl1'], MSG['rem-sh-di-msg1'],
-                button=MSG['rem-sh-di-btn1'], detail=_value)
+                button=MSG['rem-sh-di-btn1'], detail=_value, parent=parent)
         self.clipboard_clear()
         self.clipboard_append(value)
-        self.reset_entry()
+        self.last_remember = value
+        if focus:
+            focus.focus_set()
+        if reset:
+            self.reset_entry()
+
+
+    @verify_password
+    def show(self):
+        item = self.var_item.get()
+        self.__show(item, focus=self.g_item, reset=True, parent=common.root)
 
     @verify_password
     def update(self):
@@ -237,7 +258,7 @@ class App(ttk.Frame):
         item = self.var_item.get()
         if item == '':
             showerror(MSG['rem-rm-de-ttl1'], MSG['rem-rm-de-msg1'],
-                    button=MSG['rem-rm-de-btn1'])
+                    button=MSG['rem-rm-de-btn1'], parent=self.root)
             self.g_item.focus_set()
             return
         try:
@@ -246,54 +267,81 @@ class App(ttk.Frame):
                 button=[
                     (MSG['rem-rm-de-btn2-ok'],'ok'),
                     (MSG['rem-rm-de-btn2-ca'],'cancel')
-                ])
+                ], parent=self.root)
             if decision != 'ok':
                 showinfo(MSG['rem-rm-di-ttl1'], MSG['rem-rm-di-msg1'],
-                        MSG['rem-rm-di-btn1'])
+                        MSG['rem-rm-di-btn1'], parent=self.root)
                 self.reset_entry()
                 return
         except NoSuchItem:
             showerror(MSG['rem-rm-de-ttl3'], MSG['rem-rm-de-msg3'],
-                    button=MSG['rem-rm-de-btn3'])
+                    button=MSG['rem-rm-de-btn3'], parent=self.root)
             self.g_item.focus_set()
             return
         try:
             Registry.remove(item)
         except NoSuchItem:
             showerror(MSG['rem-rm-de-ttl4'], MSG['rem-rm-de-msg4'],
-                    button=MSG['rem-rm-de-btn4'])
+                    button=MSG['rem-rm-de-btn4'], parent=self.root)
             self.g_item.focus_set()
             return
         showinfo(MSG['rem-rm-di-ttl2'], MSG['rem-rm-di-msg2'],
-                button=MSG['rem-rm-di-btn2'])
+                button=MSG['rem-rm-di-btn2'], parent=self.root)
         self.reset_entry()
+
+    # list() の選択ハンドラー
+    def select_item(self, event=None):
+        idx = self.g_itemlist.curselection()
+        item = self.g_itemlist.get(idx)
+        self.__show(item, focus=self.g_itemlist, reset=False, parent=self.g_list)
+
+
+    # list() の終了ハンドラー
+    def close_list(self):
+        self.g_list.destroy()
+        self.reset_entry()
+
 
     @verify_password
     def list(self):
         items = Registry.list()
+        # まあ、ろくでもないことが起きたということにゃ
         if items is None:
             self.reset_entry()
             return
         if len(items) == 0:
             showinfo(MSG['rem-li-di-ttl1'], MSG['rem-li-di-msg1'],
                     button=MSG['rem-li-di-btn1'])
-        else:
-            def fmt(items):
-                ret = ''
-                s = ''
-                for i in items:
-                    if len(s) + len(i) > 50:
-                        ret += ',\n%s' % s
-                        s = '"%s"' % i
-                    else:
-                        s += ',"%s"' % i
-                if s != '':
-                    ret += ',\n%s' % s
-                return ret
+            return
+        # Toplevelの設定にゃ
+        dlog = tk.Toplevel(takefocus=True)
+        dlog.title(MSG['rem-li-di-ttl2'])
+        dlog.protocol('WM_DELETE_WINDOW', self.close_list)
+        dlog.grab_set()
+        dlog.transient(self.root)
+        self.g_list = dlog
+        # 部品作りにゃ
+        frm = ttk.Frame(dlog, padding=10)
+        lbl = ttk.Label(frm, text=MSG['rem-li-di-msg2'])
+        scr = tk.Scrollbar(frm, orient=tk.VERTICAL)
+        lst = tk.Listbox(frm, yscrollcommand=scr.set, selectmode=tk.SINGLE)
+        scr['command'] = lst.yview
+        lst.bind('<<ListboxSelect>>', self.select_item)
+        # 部品を配置するにゃ
+        frm.pack(expand=True, fill=tk.BOTH)
+        lbl.grid(column=0, row=0)
+        lst.grid(column=0, row=1, sticky=tk.E+tk.W+tk.N+tk.S)
+        scr.grid(column=1, row=1, sticky=tk.N+tk.S)
+        frm.columnconfigure(0, weight=1)
+        frm.columnconfigure(1, weight=0)
+        frm.rowconfigure(0, weight=0)
+        frm.rowconfigure(1, weight=1)
+        lst.delete(0, tk.END)
+        lst.insert(tk.END, *items)
+        self.g_itemlist = lst
+        place_window(dlog, self.root)
+        dlog.focus_set()
 
-            showinfo(MSG['rem-li-di-ttl2'], MSG['rem-li-di-msg2'],
-                button=MSG['rem-li-di-btn2'], detail=fmt(items)
-            )
 
     def hint(self):
         showinfo(MSG['rem-hi-di-ttl1'], MSG['rem-hi-di-msg1'],
@@ -310,9 +358,15 @@ class App(ttk.Frame):
             button=[
                 (MSG['rem-qu-dw-btn1-ok'], 'ok'),
                 (MSG['rem-qu-dw-btn1-ca'], 'cancel')
-            ])
+            ], parent=common.root)
         if decision == 'ok':
+            # Timer を止めるにゃ
+            if self.cb_thread is not None:
+                self.cb_thread.cancel()
             Registry.quit()
+            # 自分で終わらせるにゃ。
+            self.root.destroy()
+
 
     @verify_password
     def export(self):
@@ -337,6 +391,8 @@ class App(ttk.Frame):
         finally:
             self.reset_entry()
 
+    # JSONに重複がないか確かめるにゃ
+    # 重複がなければ辞書を返すにゃ
     def __json_check_dup(self, d):
         uniq_key = {x[0] for x in d}
         if len(d) != len(uniq_key):
@@ -416,7 +472,7 @@ class App(ttk.Frame):
 
             # DBの中のキーと重複がないかチェックするにゃ。
             intersect = set(Registry.list()) & set(imp.keys())
-            if  intersect != set():
+            if  len(intersect) != 0:
                 decision = showwarning(MSG['rem-im-dw-ttl1'],
                     MSG['rem-im-dw-msg1'],
                     detail=','.join(['"%s"' % i for i in intersect]),
@@ -425,13 +481,44 @@ class App(ttk.Frame):
                 )
                 if decision == 'cancel':
                     self.reset_entry()
-                    self.reset_entry()
                     return
 
             Registry.import_(imp)
             self.reset_entry()
 
+    def clear_clipboard(self):
+        # にゃあが覚えたことと同じなら消すにゃ
+        if self.master.clipboard_get() == self.last_remember:
+            self.master.clipboard_clear()
+            # どうもclearしただけでは消えないようにゃから空文字追加にゃ
+            self.master.clipboard_append('')
+        self.last_remenber = None
 
+    def setting(self):
+        s = Setting(self.root, self.config)
+        self.root.wait_window(s)
+        # 後始末にゃ
+        # クリップボード削除の設定変更反映
+        # 同じ値になっていたら何もしないにゃ
+        if s.cb_wait != self.cb_wait:
+            self.config['interval'] = self.cb_wait = s.cb_wait
+            try:
+                self.config.save()
+            except ConfigSaveError as e:
+                showerror(MSG['rem-se-se-lbl1'], MSG['rem-se-se-msg1'],
+                    detail=traceback.format_exc(),
+                    button=MSG['rem-se-se-btn1'])
+                return
+            if self.cb_thread and self.cb_thread.is_alive():
+                self.cb_thread.cancel()
+            if self.cb_wait != 0:
+                self.cb_thread = threading.Timer(
+                    self.cb_wait, self.clear_clipboard)
+                self.cb_thread.start()
+            else:
+                self.cb_thread = None
+
+# メインプログラムにゃよ
 if __name__ == '__main__':
     Registry.load()
     common.root = Tk()
