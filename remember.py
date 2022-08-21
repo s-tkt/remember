@@ -139,11 +139,11 @@ class App(ttk.Frame):
         if len(passwd) == 0:
             showerror(MSG['rem-cp-de-ttl1'],
                 MSG['rem-cp-de-msg1'],
-                button=MSG['rem-cp-de-btn1'])
+                button=MSG['rem-cp-de-btn1'], parent=self.root)
             return False
         if not Registry.password_match(passwd):
             showerror(MSG['rem-cp-de-ttl2'], MSG['rem-cp-de-msg2'],
-                    button=MSG['rem-cp-de-btn2'])
+                    button=MSG['rem-cp-de-btn2'], parent=self.root)
             self.g_passwd.focus_set()
             return False
         return True
@@ -202,7 +202,7 @@ class App(ttk.Frame):
     @verify_password
     def show(self):
         item = self.var_item.get()
-        self.__show(item, focus=self.g_item, reset=True, parent=common.root)
+        self.__show(item, focus=self.g_item, reset=True, parent=self.root)
 
     @verify_password
     def update(self):
@@ -233,24 +233,24 @@ class App(ttk.Frame):
         item = self.var_item.get()
         if item == '':
             showerror(MSG['rem-ad-de-ttl1'], MSG['rem-ad-de-msg1'],
-                    button=MSG['rem-ad-de-ttl1'])
+                    button=MSG['rem-ad-de-ttl1'], parent=self.root)
             self.g_item.focus_set()
             return
         value = self.getvalue()[:-1] #最後の改行を取り除くにゃ
         if value == '':
             showerror(MSG['rem-ad-de-ttl2'], MSG['rem-ad-de-msg2'],
-                    button=MSG['rem-ad-de-btn2'])
+                    button=MSG['rem-ad-de-btn2'], parent=self.root)
             self.g_value.focus_set()
             return
         try:
             Registry.add(item, value)
         except ExistingItem:
             showerror(MSG['rem-ad-de-ttl3'], MSG['rem-ad-de-msg3'],
-                    button=MSG['rem-ad-de-btn3'])
+                    button=MSG['rem-ad-de-btn3'], parent=self.root)
             self.g_item.focus_set()
             return
         showinfo(MSG['rem-ad-di-ttl1'], MSG['rem-ad-di-msg1'],
-                button=MSG['rem-ad-di-btn1'])
+                button=MSG['rem-ad-di-btn1'], parent=self.root)
         self.reset_entry()
 
     @verify_password
@@ -311,7 +311,7 @@ class App(ttk.Frame):
             return
         if len(items) == 0:
             showinfo(MSG['rem-li-di-ttl1'], MSG['rem-li-di-msg1'],
-                    button=MSG['rem-li-di-btn1'])
+                    button=MSG['rem-li-di-btn1'], parent=self.root)
             return
         # Toplevelの設定にゃ
         dlog = tk.Toplevel(takefocus=True)
@@ -346,7 +346,7 @@ class App(ttk.Frame):
     def hint(self):
         showinfo(MSG['rem-hi-di-ttl1'], MSG['rem-hi-di-msg1'],
                 button=MSG['rem-hi-di-btn1'],
-                detail=Registry.hint)
+                detail=Registry.hint, parent=common.root)
 
     def quit(self):
         if Registry.error:
@@ -494,6 +494,7 @@ class App(ttk.Frame):
             self.master.clipboard_append('')
         self.last_remenber = None
 
+    @verify_password
     def setting(self):
         s = Setting(self.root, self.config)
         self.root.wait_window(s)
