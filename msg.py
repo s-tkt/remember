@@ -236,7 +236,7 @@ m = {
         'reg-qu-de-btn1': 'OK',
     },
     'cat' : {
-        'rem-main-title': 'にゃあの記録～おさかな食べさせるにゃ！',
+        'rem-main-title': 'にゃあの記録～おさかなにゃ！',
 
         'rem-c-load-ttl' : 'いきなりエラーにゃ！',
         'rem-c-load-msg' : '設定ファイルが読めないにゃ・・・',
@@ -251,6 +251,7 @@ m = {
         'rem-b-list': '一覧にゃ',
         'rem-me-ope': '編集するにゃ',
         'rem-me-ope-rm': '思い出を消すにゃよ？',
+        'rem-me-ope-re': '名前を変えるにゃよ？',
         'rem-me-sh': '教えるにゃ',
         'rem-me-sh-item': '今まで覚えたことにゃ',
         'rem-me-sh-hint': '合言葉を忘れたにゃ！',
@@ -329,6 +330,27 @@ m = {
         'rem-rm-di-msg2': 'もうそのことは忘れたにゃ。\n'
                 '忘れることも大切にゃ。',
         'rem-rm-di-btn2': '諸行無常にゃねえ',
+
+        'rem-re-de-ttl1': 'わからないにゃ',
+        'rem-re-de-msg1': '何を変えたいにゃ？',
+        'rem-re-de-btn1': 'もう一度にゃ',
+        'rem-re-ds-ttl1': '教えるにゃ',
+        'rem-re-ds-msg1': '何に変えるにゃ？',
+        'rem-re-ds-btn1-ok': 'これでいいにゃ？',
+        'rem-re-ds-btn1-ca': 'やめるにゃ！',
+        'rem-re-de-ttl2': 'やめるにゃ',
+        'rem-re-de-msg2': 'それはもうあるにゃよ。'
+            'どうしてもというにゃら、先にそれを忘れるにゃ。',
+        'rem-re-de-btn2': 'わかったにゃ',
+        'rem-re-de-ttl3': 'だめにゃ',
+        'rem-re-de-msg3': '同じにゃよ！',
+        'rem-re-de-btn3': 'うっかりにゃ',
+        'rem-re-di-ttl1': 'わかったにゃ',
+        'rem-re-di-msg1': '変えたにゃ',
+        'rem-re-di-btn1': '納得したにゃ',
+        'rem-re-de-ttl4': 'だめにゃ',
+        'rem-re-de-msg4': 'そんなことは知らないにゃよ・・・',
+        'rem-re-de-btn4': 'うっかりにゃ',
 
         'rem-li-di-ttl1': 'にゃぁぁ',
         'rem-li-di-msg1': 'にゃあはまだ何もおぼえてないにゃん・・・',

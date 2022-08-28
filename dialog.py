@@ -149,7 +149,7 @@ def askpassword(title, prompt, button, **kw):
             button=button, parent=common.root, **kw)
     return q.getresult()
 
-def askstring(title, prompt, button, **kw):
-    q = QueryString(title, prompt, button, parent=common.root, **kw)
+def askstring(title, prompt, button, parent=common.root, **kw):
+    q = QueryString(title, prompt, button, parent=parent, **kw)
     return q.getresult()
 

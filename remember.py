@@ -6,7 +6,7 @@ from functools import wraps
 from tkinter import Tk, ttk
 from tkinter.scrolledtext import ScrolledText
 import tkinter as tk
-from dialog import showerror, showinfo, showwarning, place_window
+from dialog import showerror, showinfo, showwarning, askstring, place_window
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 import csv
 import json
@@ -73,14 +73,16 @@ class App(ttk.Frame):
         self.g_item.bind('<Return>', self.check_and_show)
 
         # 内容
-        ttk.Label(self, text=MSG['rem-l-cont']).grid(column=0, row=2, pady=5, sticky=tk.E+tk.N)
+        ttk.Label(self, text=MSG['rem-l-cont']).grid(column=0, row=2,
+            padx=5, pady=5, sticky=tk.E+tk.N)
         self.g_value = tk.scrolledtext.ScrolledText(master=self,
-                height = 10,
-                width = 30,
-                wrap = tk.CHAR,
-                exportselection = 0,
+            height = 10,
+            width = 30,
+            pady = 10,
+            wrap = tk.CHAR,
+            exportselection = 0,
         )
-        self.g_value.grid(column=1, row=2,
+        self.g_value.grid(column=1, row=2, pady=5, padx=10,
                 sticky=tk.W+tk.E+tk.N+tk.S)
 
         # ボタン
@@ -109,6 +111,8 @@ class App(ttk.Frame):
                 menu=self.g_menu_ope)
         self.g_menu_ope.add('command', label=MSG['rem-me-ope-rm'],
                 command=self.remove)
+        self.g_menu_ope.add('command', label=MSG['rem-me-ope-re'],
+                command=self.rename)
         # 表示
         self.g_menu_info = tk.Menu(self.g_menubar, tearoff=0)
         self.g_menubar.add_cascade(label=MSG['rem-me-sh'],
@@ -263,7 +267,8 @@ class App(ttk.Frame):
             return
         try:
             value = Registry.get(item)
-            decision = showwarning(MSG['rem-rm-de-ttl2'], MSG['rem-rm-de-msg2'],
+            decision = showwarning(MSG['rem-rm-de-ttl2'],
+                MSG['rem-rm-de-msg2'], detail = value,
                 button=[
                     (MSG['rem-rm-de-btn2-ok'],'ok'),
                     (MSG['rem-rm-de-btn2-ca'],'cancel')
@@ -288,6 +293,54 @@ class App(ttk.Frame):
         showinfo(MSG['rem-rm-di-ttl2'], MSG['rem-rm-di-msg2'],
                 button=MSG['rem-rm-di-btn2'], parent=self.root)
         self.reset_entry()
+
+    @verify_password
+    def rename(self):
+        item = self.g_item.get()
+        if item == '':
+            showerror(MSG['rem-re-de-ttl1'], MSG['rem-re-de-msg1'],
+                button=MSG['rem-re-de-btn1'], parent=self.root)
+            self.g_item.focus_set()
+            return
+        try:
+            value = Registry.get(item)
+        except NoSuchItem as e:
+            showerror(MSG['rem-re-de-ttl4'], MSG['rem-re-de-msg4'],
+                button=MSG['rem-re-de-btn4'],
+                detail=item, parent=self.root)
+            self.g_item.focus_set()
+            return
+        while True:
+            new_item = askstring(MSG['rem-re-ds-ttl1'],
+                MSG['rem-re-ds-msg1'],
+                button=(MSG['rem-re-ds-btn1-ok'],
+                    MSG['rem-re-ds-btn1-ca']),
+                parent=self.root)
+            if new_item is None:
+                self.reset_entry()
+                return
+            # 同じ名前を入れるでないにゃ！
+            if new_item == item:
+                showerror(MSG['rem-re-de-ttl3'], MSG['rem-re-de-msg3'],
+                    button=MSG['rem-re-de-btn3'], parent=self.root)
+                continue
+
+            # 項目名がDBに無いことを確認するにゃ
+            try:
+                v = Registry.get(new_item)
+                showerror(MSG['rem-re-de-ttl2'], MSG['rem-re-de-msg2'],
+                    button=MSG['rem-re-de-btn2'], parent=self.root)
+                continue
+            except NoSuchItem:
+                break
+
+        value = Registry.get(item)
+        Registry.add(new_item, value)
+        Registry.remove(item)
+        showinfo(MSG['rem-re-di-ttl1'], MSG['rem-re-di-msg1'],
+                button=MSG['rem-re-di-btn1'], parent=self.root)
+        self.reset_entry()
+        return
 
     # list() の選択ハンドラー
     def select_item(self, event=None):
