@@ -1,7 +1,10 @@
 m = {
-    'ja' : {
+    '日本語' : {
         'rem-main-title': '備忘録',
 
+        'rem-c-load-ttl' : 'エラー',
+        'rem-c-load-msg' : '設定ファイルが読めません。',
+        'rem-c-load-btn' : '継続できません。',
         'rem-l-pass': 'パスワード:',
         'rem-l-item': '項目:',
         'rem-l-cont': '内容:',
@@ -10,15 +13,26 @@ m = {
         'rem-b-upd': '更新',
         'rem-b-fgt': '削除',
         'rem-b-list': '一覧',
+        'rem-me-ope': '編集',
+        'rem-me-ope-rm': '削除',
+        'rem-me-ope-re': '項目名の変更',
         'rem-me-sh': '表示',
         'rem-me-sh-item': '項目',
         'rem-me-sh-hint': 'ヒント',
-        'rem-de-ttl1': 'エラー',
-        'rem-de-msg1': 'パスワードを入れてください。',
-        'rem-de-btn1': 'OK',
-        'rem-de-ttl2': 'エラー',
-        'rem-de-msg2': 'パスワードが違います。',
-        'rem-de-btn2': 'OK',
+        'rem-me-se': '設定',
+        'rem-me-se-conf': '動作設定',
+
+        'rem-me-da': 'マイグレート',
+        'rem-me-da-ex': 'エクスポート',
+        'rem-me-da-im': 'インポート',
+
+        'rem-cp-de-ttl1': 'エラー',
+        'rem-cp-de-msg1': 'パスワードを入力してください。',
+        'rem-cp-de-btn1': 'はい',
+        'rem-cp-de-ttl2': 'エラー',
+        'rem-cp-de-msg2': 'パスワードが正しくありません。',
+        'rem-cp-de-btn2': '再入力',
+
         'rem-sh-de-ttl1': 'エラー',
         'rem-sh-de-msg1': '項目を入れてください。',
         'rem-sh-de-btn1': 'OK',
@@ -29,6 +43,7 @@ m = {
         'rem-sh-di-msg1': 'クリップボードにコピーしました。',
         'rem-sh-di-btn1': 'OK',
         'rem-sh-misc': '...以下略',
+
         'rem-up-de-ttl1': 'エラー',
         'rem-up-de-msg1': '項目を入れてください。',
         'rem-up-de-btn1': 'OK',
@@ -38,6 +53,9 @@ m = {
         'rem-up-de-ttl3': 'エラー',
         'rem-up-de-msg3': '内容がありません。',
         'rem-up-de-btn3': 'OK',
+        'rem-up-di-ttl1': '情報',
+        'rem-up-di-msg1': '変更しました。',
+        'rem-up-di-btn1': '戻る',
 
         'rem-ad-de-ttl1': 'エラー',
         'rem-ad-de-msg1': '項目を入れてください。',
@@ -72,6 +90,27 @@ m = {
         'rem-rm-di-msg2': '消去しました。',
         'rem-rm-di-btn2': 'OK',
 
+        'rem-re-de-ttl1': 'エラー',
+        'rem-re-de-msg1': '項目名を入れてください。',
+        'rem-re-de-btn1': '戻る',
+        'rem-re-ds-ttl1': 'エラー',
+        'rem-re-ds-msg1': '新しい項目名を入れてください。',
+        'rem-re-ds-btn1-ok': 'はい',
+        'rem-re-ds-btn1-ca': 'キャンセル',
+        'rem-re-de-ttl2': 'エラー',
+        'rem-re-de-msg2': 'その項目はすでにあります。'
+            '変更したいときは先にその項目を削除してください。',
+        'rem-re-de-btn2': 'はい',
+        'rem-re-de-ttl3': 'エラー',
+        'rem-re-de-msg3': '前の項目名と同じです。',
+        'rem-re-de-btn3': 'はい',
+        'rem-re-di-ttl1': '情報',
+        'rem-re-di-msg1': '変更しました。',
+        'rem-re-di-btn1': '戻る',
+        'rem-re-de-ttl4': 'エラー',
+        'rem-re-de-msg4': 'その項目はありません。',
+        'rem-re-de-btn4': '戻る',
+
         'rem-li-di-ttl1': '情報',
         'rem-li-di-msg1': 'まだ情報が登録されていません。',
         'rem-li-di-btn1': 'OK',
@@ -89,40 +128,94 @@ m = {
         'rem-qu-dw-btn1-ok': '終了',
         'rem-qu-dw-btn1-ca': 'Cancel',
 
+        'rem-ex-df-ttl1': '出力先ファイル',
+        'rem-ex-de-ttl1': 'エラー',
+        'rem-ex-de-msg1': 'ファイルの書き込みに失敗しました。',
+        'rem-ex-de-btn1': '戻る',
+
+        'rem-im-df-ttl1': '入力元ファイル',
+        'rem-im-de-ttl1': 'エラー',
+        'rem-im-de-msg1': 'フォーマットが不正です。',
+        'rem-im-de-btn1': '戻る',
+        'rem-im-dw-ttl1': '警告',
+        'rem-im-dw-msg1': 'すでにDBに存在している項目があります。'
+                        '上書きしますか？',
+        'rem-im-dw-btn1-ok': 'はい',
+        'rem-im-dw-btn1-ca': 'いいえ',
+        'rem-im-de-ttl2': 'エラー',
+        'rem-im-de-msg2': 'CSVファイルにカラム数が2でない行があります。',
+        'rem-im-de-btn2': '戻る',
+        'rem-im-de-ttl3': 'エラー',
+        'rem-im-de-msg3': '不正なJSONファイルです。',
+        'rem-im-de-btn3': '戻る',
+        'rem-im-de-ttl4': 'エラー',
+        'rem-im-de-msg4': 'すでにDBに存在する項目があります。',
+        'rem-im-de-btn4': '戻る',
+
+        'reg-da-de-ttl1': '緊急',
+        'reg-da-de-msg-r': 'DBファイルの読み込みに失敗しました。',
+        'reg-da-de-msg-w': 'DBファイルの書き込みに失敗しました。',
+        'reg-da-de-msg-c': 'DBファイルの読み書きに失敗しました。',
+
         'reg-lo-dw-ttl1': '情報',
-        'reg-lo-dw-msg1': 'DBファイルが見当たらないため、初期化が必要です。i\n初期化しますか？',
+        'reg-lo-dw-msg1': 'DBファイルが見当たらないため、'
+            '初期化が必要です。\n初期化しますか？',
         'reg-lo-dw-btn1-ok': 'はい',
         'reg-lo-dw-btn1-ca': 'Cancel',
-
         'reg-lo-in-ttl1': '情報',
         'reg-lo-in-msg1': '終了します。',
-        'reg-lo-in-btn1:': 'OK',
-
+        'reg-lo-in-btn1': 'はい',
         'reg-lo-da-ttl1': '入力',
         'reg-lo-da-msg1': 'パスワードのヒントを入力してください。',
-        'reg-lo-da-btn1-ok': 'OK',
-        'reg-lo-da-btn1-ca': 'Cancel',
-
+        'reg-lo-da-btn1-ok': 'はい',
+        'reg-lo-da-btn1-ca': '止める',
         'reg-lo-de-ttl1': 'エラー',
-        'reg-lo-de-msg1': 'ファイル形式が変更になりました。修正してください。',
+        'reg-lo-de-msg1': 'ファイル形式が変更になりました。'
+            '修正してください。',
         'reg-lo-de-btn1': 'OK',
 
+        'reg-gp-da-ttl1': 'パスワードの設定',
+        'reg-gp-da-msg1': 'パスワードを入力してください。\n'
+            'パスワードを忘れた場合、復旧手段はありません。',
+        'reg-gp-da-btn1-ok': 'はい',
+        'reg-gp-da-btn1-ca': 'キャンセル',
+        'reg-gp-da-ttl2': 'パスワードの設定',
+        'reg-gp-da-msg2': '照合のためもう一度入力してください。',
+        'reg-gp-da-btn2-ok': 'はい',
+        'reg-gp-da-btn2-ca': 'キャンセル',
+        'reg-gp-de-ttl1': 'エラー',
+        'reg-gp-de-msg1': 'パスワードが不一致です。',
+        'reg-gp-de-btn1': 'もう一度',
+
         'reg-sa-dw-ttl1': '警告',
-        'reg-sa-dw-msg1': '操作中にエラーが記録されています。本当に保存しますか？',
+        'reg-sa-dw-msg1': '操作中にエラーが記録されています。'
+            '本当に保存しますか？',
         'reg-sa-dw-btn1-ok': '保存',
         'reg-sa-dw-btn1-ca': 'Cancel',
 
         'reg-sa-di-ttl1': '情報',
-        'reg-sa-di-msg1': 'DBファイルに対する対処が必要な可能性があります。',
+        'reg-sa-di-msg1': 'DBファイルに対する対処が必要な'
+            '可能性があります。',
         'reg-sa-di-btn1': 'OK',
 
         'reg-qu-de-ttl1': 'エラー',
         'reg-qu-de-msg1': '終了に失敗しました。',
         'reg-qu-de-btn1': '受諾',
+
+        'set-in-ttl': '設定',
+        'set-in-frm1': 'クリップボード消去',
+        'set-in-lbl1': 'クリップボードを消す秒数\n'
+            '自動で消したくなければ"0"とする。',
+        'set-in-btn1': '適用',
+        'set-in-frm2': '言語',
+        'set-in-lbl2': '表示する言語',
     },
-    'en' : {
+    'English' : {
         'rem-main-title': 'Remember',
 
+        'rem-c-load-ttl' : 'Error',
+        'rem-c-load-msg' : "Cant't read config file.",
+        'rem-c-load-btn' : 'Abort',
         'rem-l-pass': 'Password:',
         'rem-l-item': 'Item:',
         'rem-l-cont': 'Content:',
@@ -131,15 +224,36 @@ m = {
         'rem-b-upd': 'Update',
         'rem-b-fgt': 'Remove',
         'rem-b-list': 'List',
+
+        'rem-me-ope': 'Edit',
+        'rem-me-ope-rm': 'Remove',
+        'rem-me-ope-re': 'Rename item',
+
         'rem-me-sh': 'Info',
-        'rem-me-sh-item': 'Items',
+        'rem-me-sh-item': 'List items',
         'rem-me-sh-hint': 'Password hint',
+
+        'rem-me-se': 'Setting',
+        'rem-me-se-conf': 'Function',
+
+        'rem-me-da': 'Migration',
+        'rem-me-da-ex': 'Export',
+        'rem-me-da-im': 'Import',
+
+        'rem-cp-de-ttl1': 'Error',
+        'rem-cp-de-msg1': 'Input password.',
+        'rem-cp-de-btn1': 'OK',
+        'rem-cp-de-ttl2': 'Error',
+        'rem-cp-de-msg2': 'Input correct password.',
+        'rem-cp-de-btn2': 'OK',
+
         'rem-cp-de-ttl1': 'Error',
         'rem-cp-de-msg1': 'Input your password.',
         'rem-cp-de-btn1': 'OK',
         'rem-cp-de-ttl2': 'Error',
         'rem-cp-de-msg2': 'Password unmatch.',
         'rem-cp-de-btn2': 'OK',
+
         'rem-sh-de-ttl1': 'Error',
         'rem-sh-de-msg1': 'Input an item.',
         'rem-sh-de-btn1': 'OK',
@@ -147,9 +261,10 @@ m = {
         'rem-sh-de-msg2': 'Item not found',
         'rem-sh-de-btn2': 'OK',
         'rem-sh-di-ttl1': 'Info',
-        'rem-sh-di-msg1': 'The data were picked up and copied to clip board.',
+        'rem-sh-di-msg1': 'The data is copied to clip board.',
         'rem-sh-di-btn1': 'OK',
         'rem-sh-misc': '...and so on.',
+
         'rem-up-de-ttl1': 'Error',
         'rem-up-de-msg1': 'Input an item.',
         'rem-up-de-btn1': 'OK',
@@ -159,6 +274,9 @@ m = {
         'rem-up-de-ttl3': 'Error',
         'rem-up-de-msg3': 'Input content.',
         'rem-up-de-btn3': 'OK',
+        'rem-up-di-ttl1': 'Info',
+        'rem-up-di-msg1': 'Updated.',
+        'rem-up-di-btn1': 'Return',
 
         'rem-ad-de-ttl3': 'Error',
         'rem-ad-de-msg3': 'That item is existing.',
@@ -184,8 +302,27 @@ m = {
         'rem-rm-de-msg4': 'The target memory was lost.',
         'rem-rm-de-btn4': 'OK',
         'rem-rm-di-ttl2': 'Info',
-        'rem-rm-di-msg2': 'The memory is removed perfectly',
+        'rem-rm-di-msg2': 'The memory is removed.',
         'rem-rm-di-btn2': 'OK',
+
+        'rem-re-ds-ttl1': 'Error',
+        'rem-re-ds-msg1': 'Enter new item name.',
+        'rem-re-ds-btn1-ok': 'OK',
+        'rem-re-ds-btn1-ca': 'Cancel',
+        'rem-re-de-ttl2': 'Error',
+        'rem-re-de-msg2': 'That item exists already.'
+            'Remove that item before rename.',
+        'rem-re-de-btn2': 'OK',
+        'rem-re-de-ttl3': 'Error',
+        'rem-re-de-msg3': 'That item is not changed as previous.',
+        'rem-re-de-btn3': 'Return',
+        'rem-re-di-ttl1': 'Info',
+        'rem-re-di-msg1': 'The key is updated.',
+        'rem-re-di-btn1': 'Return',
+        'rem-re-de-ttl4': 'Error',
+        'rem-re-de-msg4': 'That item does not exit.',
+        'rem-re-de-btn4': 'Return',
+
 
         'rem-li-di-ttl1': 'Info',
         'rem-li-di-msg1': 'There is no memories.',
@@ -200,27 +337,68 @@ m = {
 
         'rem-qu-dw-ttl1': 'Warning',
         'rem-qu-dw-msg1': 'Are you realy quit?',
-        'rem-qu-dw-dtl1': 'While using this application, there might occur some error.',
+        'rem-qu-dw-dtl1': 'While using this application, '
+            'there might occur some errors.',
         'rem-qu-dw-btn1-ok': 'Quit',
         'rem-qu-dw-btn1-ca': 'Cancel',
+
+        'rem-ex-df-ttl1': 'Output file',
+        'rem-ex-de-ttl1': 'Error',
+        'rem-ex-de-msg1': 'Failed to write file.',
+        'rem-ex-de-btn1': 'Return',
+
+        'rem-im-df-ttl1': 'Input file',
+        'rem-im-de-ttl1': 'Eror',
+        'rem-im-de-msg1': 'Illegal format.',
+        'rem-im-de-btn1': 'Return',
+        'rem-im-dw-ttl1': 'Warning',
+        'rem-im-dw-msg1': 'Some data exists already in DB. '
+                        'Do you overwrite them?',
+        'rem-im-dw-btn1-ok': 'Yes',
+        'rem-im-dw-btn1-ca': 'No',
+        'rem-im-de-ttl2': 'Error',
+        'rem-im-de-msg2': 'Some rows do not cotain in 2 columns.',
+        'rem-im-de-btn2': 'Return',
+        'rem-im-de-ttl3': 'Error',
+        'rem-im-de-msg3': 'Invalid JSON file.',
+        'rem-im-de-btn3': 'Return',
+        'rem-im-de-ttl4': 'Error',
+        'rem-im-de-msg4': 'Some data exists already in DB.',
+        'rem-im-de-btn4': 'Return',
+
+        'reg-da-de-ttl1': 'Emergency',
+        'reg-da-de-msg-r': 'Failed to write DB.',
+        'reg-da-de-msg-w': 'Failed to read DB',
+        'reg-da-de-msg-c': 'Failed to update DB',
 
         'reg-lo-dw-ttl1': 'Info',
         'reg-lo-dw-msg1': 'DB file no found.\nIs this the first launch of this apps?',
         'reg-lo-dw-btn1-ok': 'Yes',
         'reg-lo-dw-btn1-ca': 'No',
-
         'reg-lo-in-ttl1': 'Info',
         'reg-lo-in-msg1': 'See you again.',
         'reg-lo-in-btn1:': 'OK',
-
         'reg-lo-da-ttl1': 'Enter',
         'reg-lo-da-msg1': 'Input a hint for password.',
         'reg-lo-da-btn1-ok': 'OK',
         'reg-lo-da-btn1-ca': 'Cancel',
-
         'reg-lo-de-ttl1': 'Error',
-        'reg-lo-de-msg1': 'DB file of previous version found.\nDo version up before launch.',
+        'reg-lo-de-msg1': 'DB file of previous version found.\n'
+            'Do version up before launch.',
         'reg-lo-de-btn1': 'OK',
+
+        'reg-gp-da-ttl1': 'Info',
+        'reg-gp-da-msg1': 'Input PASSWORD.\n'
+            'If you forgot password, there is NO WAY to rescue them.',
+        'reg-gp-da-btn1-ok': 'Yes',
+        'reg-gp-da-btn1-ca': 'Cancel',
+        'reg-gp-da-ttl2': 'Info',
+        'reg-gp-da-msg2': 'Confirm your password.',
+        'reg-gp-da-btn2-ok': 'OK',
+        'reg-gp-da-btn2-ca': 'Cancel',
+        'reg-gp-de-ttl1': 'Error',
+        'reg-gp-de-msg1': 'You entered the different passwords.',
+        'reg-gp-de-btn1': 'Again',
 
         'reg-sa-dw-ttl1': 'Warning',
         'reg-sa-dw-msg1': 'There occured some erros while using app.\nDo you save anyway?',
@@ -234,8 +412,16 @@ m = {
         'reg-qu-de-ttl1': 'Error',
         'reg-qu-de-msg1': 'Failed to quit.',
         'reg-qu-de-btn1': 'OK',
+
+        'set-in-ttl': 'Settings',
+        'set-in-frm1': 'Remove clibboard.',
+        'set-in-lbl1': 'Interval fo removal (in secomds)\n'
+            'Set 0 for no removal.',
+        'set-in-btn1': 'Apply',
+        'set-in-frm2': 'Language',
+        'set-in-lbl2': 'Select',
     },
-    'cat' : {
+    'にゃあ語' : {
         'rem-main-title': 'にゃあの記録～おさかなにゃ！',
 
         'rem-c-load-ttl' : 'いきなりエラーにゃ！',

@@ -14,9 +14,7 @@ import common
 from registry import Registry, NoSuchItem, ExistingItem
 from setting import Setting
 from config import Config, ConfigLoadError, ConfigSaveError
-import msg
-
-MSG = msg.m['cat']
+from common import MSG
 
 class DupKeyError(Exception):
     def __init__(self, keys):
@@ -48,9 +46,10 @@ class App(ttk.Frame):
         self.pack(expand=True, fill=tk.BOTH)
 
         # タイマー
-        self.cb_wait = self.config['interval']
+        #self.cb_wait = self.config['interval']
         self.cb_thread = None
         self.last_remember = None
+
         # 合言葉
         ttk.Label(self, text=MSG['rem-l-pass']).grid(column=0, row=0,
                 sticky=tk.E)
@@ -554,8 +553,15 @@ class App(ttk.Frame):
         # 後始末にゃ
         # クリップボード削除の設定変更反映
         # 同じ値になっていたら何もしないにゃ
-        if s.cb_wait != self.cb_wait:
-            self.config['interval'] = self.cb_wait = s.cb_wait
+        int_changed = False
+        if s.cb_wait != self.config['interval']:
+            self.config['interval'] = s.cb_wait
+            int_changed = True
+        lang_changed = False
+        if s.v_lang.get() != self.config['lang']:
+            self.config['lang'] = s.v_lang.get()
+            lang_changed = True
+        if int_changed or lang_changed:
             try:
                 self.config.save()
             except ConfigSaveError as e:
@@ -563,6 +569,7 @@ class App(ttk.Frame):
                     detail=traceback.format_exc(),
                     button=MSG['rem-se-se-btn1'])
                 return
+        if int_changed:
             if self.cb_thread and self.cb_thread.is_alive():
                 self.cb_thread.cancel()
             if self.cb_wait != 0:

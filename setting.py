@@ -3,8 +3,7 @@ from tkinter import Tk, ttk
 from tkinter.scrolledtext import ScrolledText
 import msg
 from dialog import place_window
-
-MSG=msg.m['cat']
+from common import MSG
 
 
 class Setting(tk.Toplevel):
@@ -29,9 +28,10 @@ class Setting(tk.Toplevel):
         lfrm2 = ttk.LabelFrame(frm, text=MSG['set-in-frm2'], padding=5)
         lbl2 = ttk.Label(lfrm2, text=MSG['set-in-lbl2'])
         v_ome2 = tk.StringVar()
-        optlist = ('猫語', 'にゃ～語', 'にゃん語')
+        optlist = ('English', '日本語', 'にゃあ語')
         v_ome2.set(optlist[0])
         ome2 = tk.OptionMenu(lfrm2, v_ome2, *optlist)
+        self.v_lang = v_ome2
         btn1 = ttk.Button(frm, text=MSG['set-in-btn1'],
                 command = self.close_setting)
         # 部品を配置するにゃ

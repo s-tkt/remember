@@ -15,9 +15,7 @@ from cryptography.fernet import Fernet
 import bcrypt
 from dialog import showinfo, showerror, showwarning, askpassword, askstring
 import common
-import msg
-
-MSG = msg.m['cat']
+from common import MSG
 
 class NoSuchItem(Exception):
     pass
